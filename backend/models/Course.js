@@ -41,6 +41,7 @@ const courseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  category: { type: String, required: true, trim: true },
 });
 
 module.exports = mongoose.model("Course", courseSchema);
