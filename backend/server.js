@@ -19,6 +19,12 @@ app.use("/api/auth", authRoutes);
 const courseRoutes = require("./routes/courses");
 app.use("/api/courses", courseRoutes);
 
+const lessonRoutes = require("./routes/lessons");
+app.use("/api/lessons", lessonRoutes);
+
+const reviewRoutes = require("./routes/reviews");
+app.use("/api/reviews", reviewRoutes);
+
 // راوت تجريبي للتأكد من السيرفر
 app.get("/", (req, res) => {
   res.send("Zadulilm API is running...");

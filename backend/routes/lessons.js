@@ -66,4 +66,83 @@ router.get("/:courseId", async (req, res) => {
   }
 });
 
+// تعديل درس محدد
+router.put("/:lessonId", auth, async (req, res) => {
+  try {
+    const { lessonId } = req.params;
+    const { title, content, order } = req.body;
+
+    // اجلب الدرس من الداتا بيس
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "الدرس غير موجود." });
+    }
+
+    // اجلب الدورة المرتبطة بهذا الدرس
+    const course = await Course.findById(lesson.course);
+
+    // تحقق أن المستخدم صاحب الدورة أو أدمين
+    if (
+      course.teacher.toString() !== req.user.userId &&
+      req.user.role !== "admin"
+    ) {
+      return res
+        .status(403)
+        .json({ message: "ليس لديك صلاحية لتعديل هذا الدرس." });
+    }
+
+    // عدّل بيانات الدرس
+    if (title) lesson.title = title;
+    if (content) lesson.content = content;
+    if (order) lesson.order = order;
+
+    await lesson.save();
+
+    res.json({ message: "تم تعديل الدرس بنجاح.", lesson });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "حدث خطأ أثناء تعديل الدرس." });
+  }
+});
+
+// حذف درس محدد
+router.delete("/:lessonId", auth, async (req, res) => {
+  try {
+    const { lessonId } = req.params;
+
+    // اجلب الدرس من الداتا بيس
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "الدرس غير موجود." });
+    }
+
+    // اجلب الدورة المرتبطة بهذا الدرس
+    const course = await Course.findById(lesson.course);
+
+    // تحقق أن المستخدم صاحب الدورة أو أدمين
+    if (
+      course.teacher.toString() !== req.user.userId &&
+      req.user.role !== "admin"
+    ) {
+      return res
+        .status(403)
+        .json({ message: "ليس لديك صلاحية لحذف هذا الدرس." });
+    }
+
+    // احذف الدرس
+    await lesson.deleteOne();
+
+    // احذفه أيضًا من مصفوفة الدروس في الدورة
+    course.lessons = course.lessons.filter(
+      (lId) => lId.toString() !== lessonId
+    );
+    await course.save();
+
+    res.json({ message: "تم حذف الدرس بنجاح." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "حدث خطأ أثناء حذف الدرس." });
+  }
+});
+
 module.exports = router;
