@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Dashboard from "./pages/Dashboard";
 import AddCourse from "./pages/AddCourse";
 import Profile from "./pages/Profile";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<Courses />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetails />} />
           <Route path="/lessons/:lessonId" element={<LessonDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
