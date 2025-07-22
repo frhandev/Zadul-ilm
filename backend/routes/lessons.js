@@ -171,4 +171,52 @@ router.delete("/:lessonId", auth, async (req, res) => {
   }
 });
 
+// جلب درس محدد مع حماية الاشتراك
+router.get("/view/:lessonId", auth, async (req, res) => {
+  try {
+    const lesson = await Lesson.findById(req.params.lessonId);
+    if (!lesson) return res.status(404).json({ message: "الدرس غير موجود." });
+
+    // نفس منطق حماية الاشتراك السابق (تحقق أن الطالب مشترك أو هو المعلم/أدمين)
+    const course = await Course.findById(lesson.course);
+    if (req.user.role === "student") {
+      const isEnrolled = await Enrollment.findOne({
+        course: lesson.course,
+        student: req.user.userId,
+      });
+      if (!isEnrolled)
+        return res
+          .status(403)
+          .json({ message: "يجب الاشتراك في الدورة لمشاهدة هذا الدرس." });
+    }
+    // معلم أو أدمين: يسمح له دومًا
+    res.json(lesson);
+  } catch (error) {
+    res.status(500).json({ message: "حدث خطأ أثناء جلب الدرس." });
+  }
+}); // جلب درس محدد مع حماية الاشتراك
+router.get("/view/:lessonId", auth, async (req, res) => {
+  try {
+    const lesson = await Lesson.findById(req.params.lessonId);
+    if (!lesson) return res.status(404).json({ message: "الدرس غير موجود." });
+
+    // نفس منطق حماية الاشتراك السابق (تحقق أن الطالب مشترك أو هو المعلم/أدمين)
+    const course = await Course.findById(lesson.course);
+    if (req.user.role === "student") {
+      const isEnrolled = await Enrollment.findOne({
+        course: lesson.course,
+        student: req.user.userId,
+      });
+      if (!isEnrolled)
+        return res
+          .status(403)
+          .json({ message: "يجب الاشتراك في الدورة لمشاهدة هذا الدرس." });
+    }
+    // معلم أو أدمين: يسمح له دومًا
+    res.json(lesson);
+  } catch (error) {
+    res.status(500).json({ message: "حدث خطأ أثناء جلب الدرس." });
+  }
+});
+
 module.exports = router;

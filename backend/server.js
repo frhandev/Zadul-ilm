@@ -28,6 +28,9 @@ app.use("/api/reviews", reviewRoutes);
 const enrollmentRoutes = require("./routes/enrollments");
 app.use("/api/enrollments", enrollmentRoutes);
 
+const commentRoutes = require("./routes/comments");
+app.use("/api/comments", commentRoutes);
+
 // راوت تجريبي للتأكد من السيرفر
 app.get("/", (req, res) => {
   res.send("Zadulilm API is running...");

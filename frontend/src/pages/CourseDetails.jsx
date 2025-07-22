@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function CourseDetails() {
   const { id } = useParams(); // id هو courseId من URL
@@ -156,7 +157,12 @@ export default function CourseDetails() {
                     {idx + 1}
                   </span>
                   <span className="font-bold">{lesson.title}</span>
-                  {/* يمكن إضافة زر عرض التفاصيل أو المحتوى هنا */}
+                  <Link
+                    to={`/lessons/${lesson._id}`}
+                    className="font-bold hover:underline"
+                  >
+                    {lesson.title}
+                  </Link>{" "}
                 </li>
               ))
             ) : (

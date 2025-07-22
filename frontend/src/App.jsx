@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CourseDetails from "./pages/CourseDetails";
 import Courses from "./pages/Courses";
+import LessonDetails from "./pages/LessonDetails";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Courses />} />
         {/* صفحة تفاصيل الدورة */}
         <Route path="/courses/:id" element={<CourseDetails />} />
+        <Route path="/lessons/:lessonId" element={<LessonDetails />} />
       </Routes>
     </BrowserRouter>
   );
