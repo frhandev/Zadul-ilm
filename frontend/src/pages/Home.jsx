@@ -1,8 +1,19 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/زاد_العلم-removebg-preview.png";
 import LatestCoursesCarousel from "../components/LatestCoursesCarousel";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/courses") // استبدل بالرابط الصحيح في مشروعك
+      .then((res) => res.json())
+      .then((data) => {
+        const cats = [...new Set(data.map((c) => c.category).filter(Boolean))];
+        setCategories(cats);
+      });
+  }, []);
   return (
     <div>
       {/* Hero Section */}
@@ -44,6 +55,20 @@ export default function Home() {
         </div>
       </div>
       <LatestCoursesCarousel />
+      <div className="max-w-5xl mx-auto py-10">
+        <h2 className="text-xl font-bold mb-6 text-center">التصنيفات</h2>
+        <div className="flex flex-wrap gap-3 justify-center">
+          {categories.map((cat) => (
+            <Link
+              key={cat}
+              to={`/courses?category=${encodeURIComponent(cat)}`}
+              className="px-5 py-2 bg-green-100 rounded-full font-bold text-green-700 hover:bg-green-200 transition"
+            >
+              {cat}
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

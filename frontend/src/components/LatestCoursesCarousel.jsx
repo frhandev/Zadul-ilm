@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { NextArrow, PrevArrow } from "../components/CarouselArrow";
+import CourseCard from "./CourseCard";
 
 export default function LatestCoursesCarousel() {
   const [courses, setCourses] = useState([]);
@@ -27,6 +29,8 @@ export default function LatestCoursesCarousel() {
     slidesToShow: 4, // عدل الرقم حسب رغبتك وشاشتك
     slidesToScroll: 1,
     arrows: true,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
     responsive: [
       {
         breakpoint: 1024,
@@ -49,43 +53,17 @@ export default function LatestCoursesCarousel() {
           لا يوجد دورات مضافة بعد.
         </div>
       ) : (
-        <Slider {...settings} className="w-full flex flex-row">
+        <Slider {...settings} className="w-full flex flex-row h-fit">
           {courses.map((course) => (
             <div key={course._id} className="p-2">
-              <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full min-h-[250px]">
-                <img
-                  src={
-                    course.image
-                      ? `http://localhost:5000${course.image}`
-                      : "/default.png"
-                  }
-                  alt={course.title}
-                  className="h-32 object-cover rounded mb-3 mx-auto w-full"
-                />
-                <h3 className="font-bold mb-1 truncate">{course.title}</h3>
-                <div className="text-sm text-gray-600 mb-1 truncate">
-                  {course.teacher?.name}
-                </div>
-                <div className="mb-2 text-gray-500 text-xs">
-                  {new Date(course.createdAt).toLocaleDateString()}
-                </div>
-                <Link
-                  to={`/courses/${course._id}`}
-                  className="bg-green-600 text-white px-3 py-1 rounded text-center mt-auto block"
-                >
-                  عرض الدورة
-                </Link>
-              </div>
+              <CourseCard course={course} />
             </div>
           ))}
         </Slider>
       )}
       <div className="text-center mt-8">
-        <Link
-          to="/courses"
-          className="underline text-green-700 hover:text-green-900 font-bold"
-        >
-          استعراض جميع الدورات &rarr;
+        <Link to="/courses" className="underline text-primary font-bold">
+          استعراض جميع الدورات &larr;
         </Link>
       </div>
     </section>

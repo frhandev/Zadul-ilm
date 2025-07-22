@@ -1,76 +1,67 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import CourseCard from "../components/CourseCard";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    // تحقق إذا المستخدم مسجل دخول (اختياري)
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    fetch("http://localhost:5000/api/courses") // استبدل بالرابط الصحيح في مشروعك
+      .then((res) => res.json())
+      .then((data) => {
+        const cats = [...new Set(data.map((c) => c.category).filter(Boolean))];
+        setCategories(cats);
+      });
+  }, []);
 
-    // جلب الدورات من الباكند
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/courses");
-        setCourses(res.data);
-      } catch (err) {
-        setError("تعذر تحميل الدورات.");
-      } finally {
+  // جلب التصنيف من رابط الصفحة
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const selectedCat = params.get("category") || "all";
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/courses")
+      .then((res) => res.json())
+      .then((data) => {
+        setCourses(data);
         setLoading(false);
-      }
-    };
+      });
+  }, []);
 
-    fetchCourses();
-  }, [navigate]);
+  // فلترة حسب التصنيف الموجود في الـURL
+  const filteredCourses =
+    selectedCat === "all"
+      ? courses
+      : courses.filter((c) => c.category === selectedCat);
 
   return (
-    <div className="max-w-4xl mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">الدورات المتاحة</h1>
+    <div className="max-w-6xl mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-6 text-center">الدورات</h1>
+      <div className="flex flex-wrap gap-3 justify-center">
+        {categories.map((cat) => (
+          <Link
+            key={cat}
+            to={`/courses?category=${encodeURIComponent(cat)}`}
+            className="px-5 py-2 bg-green-100 rounded-full font-bold text-green-700 hover:bg-green-200 transition"
+          >
+            {cat}
+          </Link>
+        ))}
+      </div>
       {loading ? (
-        <div className="text-center">جاري التحميل...</div>
-      ) : error ? (
-        <div className="text-red-500 text-center">{error}</div>
+        <div className="text-center">جارٍ التحميل...</div>
+      ) : filteredCourses.length === 0 ? (
+        <div className="text-center py-16 text-gray-400">
+          لا يوجد دورات بهذا التصنيف.
+        </div>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {courses.map((course) => (
-            <div
-              key={course._id}
-              className="bg-white rounded-lg shadow p-5 flex flex-col"
-            >
-              {course.image && (
-                <img
-                  src={`http://localhost:5000${course.image}`}
-                  alt={course.title}
-                  className="rounded mb-4 h-60 object-cover"
-                />
-              )}
-
-              <h2 className="text-xl font-bold mb-2">{course.title}</h2>
-              <div className="mb-2 text-gray-700">{course.category}</div>
-              <div className="mb-4 text-gray-500 line-clamp-2">
-                {course.description}
-              </div>
-              <div className="text-sm mb-2">
-                <span className="text-gray-500">المعلم: </span>
-                {course.teacher?.name}
-              </div>
-              <Link
-                to={`/courses/${course._id}`}
-                className="mt-auto text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
-              >
-                مشاهدة الدورة
-              </Link>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {filteredCourses.map((course) => (
+            <CourseCard key={course._id} course={course} />
           ))}
         </div>
       )}
