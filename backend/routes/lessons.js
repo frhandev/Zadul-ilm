@@ -2,6 +2,7 @@ const express = require("express");
 const Lesson = require("../models/Lesson");
 const Course = require("../models/Course");
 const auth = require("../middleware/auth");
+const Enrollment = require("../models/Enrollment");
 
 const router = express.Router();
 
@@ -56,9 +57,34 @@ router.post("/:courseId", auth, async (req, res) => {
 });
 
 // جلب كل الدروس لدورة
-router.get("/:courseId", async (req, res) => {
+router.get("/:courseId", auth, async (req, res) => {
   try {
     const courseId = req.params.courseId;
+    const userId = req.user.userId;
+    const userRole = req.user.role;
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "الدورة غير موجودة." });
+    }
+
+    // إذا كان طالب
+    if (userRole === "student") {
+      // تحقق هل هو مشترك؟
+      const isEnrolled = await Enrollment.findOne({
+        course: courseId,
+        student: userId,
+      });
+
+      if (!isEnrolled) {
+        return res
+          .status(403)
+          .json({ message: "يجب الاشتراك في الدورة لمشاهدة الدروس." });
+      }
+    }
+
+    // إذا كان معلم صاحب الدورة أو أدمين، يسمح له بالمشاهدة دائمًا
+    // (لا حاجة لفحص إضافي هنا لأن الطالب فقط من يُمنع)
     const lessons = await Lesson.find({ course: courseId }).sort("order");
     res.json(lessons);
   } catch (error) {
