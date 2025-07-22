@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const authRoutes = require("./routes/auth");
 
 // إعداد dotenv لقراءة متغيرات البيئة من ملف .env
 dotenv.config();
@@ -14,7 +13,11 @@ app.use(cors());
 app.use(express.json()); // قراءة body بصيغة JSON
 
 // استيراد الراوتات
+const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
+
+const courseRoutes = require("./routes/courses");
+app.use("/api/courses", courseRoutes);
 
 // راوت تجريبي للتأكد من السيرفر
 app.get("/", (req, res) => {
