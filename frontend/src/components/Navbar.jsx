@@ -32,6 +32,26 @@ export default function Navbar() {
             دوراتي
           </Link>
         )}
+        {user && (
+          <Link to="/dashboard" className="hover:text-green-700 font-medium">
+            لوحة التحكم
+          </Link>
+        )}
+        {user && (
+          <Link to="/profile" className="hover:text-green-700 font-medium">
+            الملف الشخصي
+          </Link>
+        )}
+        {user && (
+          <Link to="/profile" className="hover:text-green-700 font-medium">
+            الملف الشخصي
+          </Link>
+        )}
+        {user && user.role === "teacher" && (
+          <Link to="/add-course" className="hover:text-green-700 font-medium">
+            إضافة دورة
+          </Link>
+        )}
         {user ? (
           <>
             <span className="text-gray-700 font-semibold">{user.name}</span>

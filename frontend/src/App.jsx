@@ -7,6 +7,9 @@ import Courses from "./pages/Courses";
 import LessonDetails from "./pages/LessonDetails";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Dashboard from "./pages/Dashboard";
+import AddCourse from "./pages/AddCourse";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
           <Route path="/" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetails />} />
           <Route path="/lessons/:lessonId" element={<LessonDetails />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/add-course" element={<AddCourse />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Footer />
       </BrowserRouter>
