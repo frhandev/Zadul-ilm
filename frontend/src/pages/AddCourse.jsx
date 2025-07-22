@@ -22,9 +22,9 @@ export default function AddCourse() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
   // الحماية: يسمح فقط للمعلم بالدخول
   if (!user || user.role !== "teacher") {
@@ -39,12 +39,20 @@ export default function AddCourse() {
     e.preventDefault();
     setError("");
     setSuccess("");
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("category", category);
+    if (imageFile) formData.append("image", imageFile);
+
     try {
-      await axios.post(
-        "http://localhost:5000/api/courses",
-        { title, description, category, image },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.post("http://localhost:5000/api/courses", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setSuccess("تمت إضافة الدورة بنجاح!");
       setTimeout(() => {
         navigate("/dashboard");
@@ -61,6 +69,12 @@ export default function AddCourse() {
         onSubmit={handleSubmit}
         className="bg-white rounded shadow p-6 space-y-4"
       >
+        <input
+          type="file"
+          accept="image/*"
+          className="w-full border rounded p-2"
+          onChange={(e) => setImageFile(e.target.files[0])}
+        />
         <input
           className="w-full border rounded p-2"
           placeholder="عنوان الدورة"
@@ -89,12 +103,6 @@ export default function AddCourse() {
             </option>
           ))}
         </select>
-        <input
-          className="w-full border rounded p-2"
-          placeholder="رابط صورة (اختياري)"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-        />
         {error && <div className="text-red-500 text-center">{error}</div>}
         {success && <div className="text-green-600 text-center">{success}</div>}
         <button

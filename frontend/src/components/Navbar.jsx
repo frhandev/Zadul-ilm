@@ -42,11 +42,6 @@ export default function Navbar() {
             الملف الشخصي
           </Link>
         )}
-        {user && (
-          <Link to="/profile" className="hover:text-green-700 font-medium">
-            الملف الشخصي
-          </Link>
-        )}
         {user && user.role === "teacher" && (
           <Link to="/add-course" className="hover:text-green-700 font-medium">
             إضافة دورة

@@ -49,11 +49,12 @@ export default function Courses() {
             >
               {course.image && (
                 <img
-                  src={course.image}
+                  src={`http://localhost:5000${course.image}`}
                   alt={course.title}
-                  className="rounded mb-3 h-40 object-cover"
+                  className="rounded mb-4 h-60 object-cover"
                 />
               )}
+
               <h2 className="text-xl font-bold mb-2">{course.title}</h2>
               <div className="mb-2 text-gray-700">{course.category}</div>
               <div className="mb-4 text-gray-500 line-clamp-2">

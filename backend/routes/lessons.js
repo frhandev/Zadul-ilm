@@ -3,11 +3,24 @@ const Lesson = require("../models/Lesson");
 const Course = require("../models/Course");
 const auth = require("../middleware/auth");
 const Enrollment = require("../models/Enrollment");
+const multer = require("multer");
+const path = require("path");
 
 const router = express.Router();
 
+// إعداد مكان حفظ الفيديو
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/videos");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // اسم عشوائي
+  },
+});
+const upload = multer({ storage });
+
 // إضافة درس جديد (معلم فقط)
-router.post("/:courseId", auth, async (req, res) => {
+router.post("/:courseId", auth, upload.single("video"), async (req, res) => {
   try {
     // التحقق من الصلاحية
     if (req.user.role !== "teacher" && req.user.role !== "admin") {
@@ -18,6 +31,11 @@ router.post("/:courseId", auth, async (req, res) => {
 
     const { title, content, order } = req.body;
     const courseId = req.params.courseId;
+
+    let videoUrl = "";
+    if (req.file) {
+      videoUrl = `/uploads/videos/${req.file.filename}`;
+    }
 
     // تحقق أن الدورة موجودة
     const course = await Course.findById(courseId);
@@ -40,9 +58,9 @@ router.post("/:courseId", auth, async (req, res) => {
       title,
       content,
       order,
-      course: courseId,
+      course: req.params.courseId,
+      videoUrl,
     });
-
     await lesson.save();
 
     // أضف الدرس لقائمة الدروس في الدورة
@@ -51,7 +69,6 @@ router.post("/:courseId", auth, async (req, res) => {
 
     res.status(201).json({ message: "تم إضافة الدرس بنجاح!", lesson });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "حدث خطأ أثناء إضافة الدرس." });
   }
 });
@@ -96,13 +113,11 @@ router.get("/:courseId", auth, async (req, res) => {
 router.put("/:lessonId", auth, async (req, res) => {
   try {
     const { lessonId } = req.params;
-    const { title, content, order } = req.body;
+    const { title, content, order, videoUrl } = req.body;
 
     // اجلب الدرس من الداتا بيس
     const lesson = await Lesson.findById(lessonId);
-    if (!lesson) {
-      return res.status(404).json({ message: "الدرس غير موجود." });
-    }
+    if (!lesson) return res.status(404).json({ message: "الدرس غير موجود." });
 
     // اجلب الدورة المرتبطة بهذا الدرس
     const course = await Course.findById(lesson.course);
@@ -121,12 +136,12 @@ router.put("/:lessonId", auth, async (req, res) => {
     if (title) lesson.title = title;
     if (content) lesson.content = content;
     if (order) lesson.order = order;
+    if (videoUrl) lesson.videoUrl = videoUrl;
 
     await lesson.save();
 
     res.json({ message: "تم تعديل الدرس بنجاح.", lesson });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "حدث خطأ أثناء تعديل الدرس." });
   }
 });
@@ -138,9 +153,7 @@ router.delete("/:lessonId", auth, async (req, res) => {
 
     // اجلب الدرس من الداتا بيس
     const lesson = await Lesson.findById(lessonId);
-    if (!lesson) {
-      return res.status(404).json({ message: "الدرس غير موجود." });
-    }
+    if (!lesson) return res.status(404).json({ message: "الدرس غير موجود." });
 
     // اجلب الدورة المرتبطة بهذا الدرس
     const course = await Course.findById(lesson.course);
@@ -155,7 +168,7 @@ router.delete("/:lessonId", auth, async (req, res) => {
         .json({ message: "ليس لديك صلاحية لحذف هذا الدرس." });
     }
 
-    // احذف الدرس
+    // احذف الدرس من قاعدة البيانات
     await lesson.deleteOne();
 
     // احذفه أيضًا من مصفوفة الدروس في الدورة
@@ -166,7 +179,6 @@ router.delete("/:lessonId", auth, async (req, res) => {
 
     res.json({ message: "تم حذف الدرس بنجاح." });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "حدث خطأ أثناء حذف الدرس." });
   }
 });

@@ -73,19 +73,17 @@ export default function LessonDetails() {
   return (
     <div className="max-w-2xl mx-auto py-10">
       <h1 className="text-2xl font-bold mb-4">{lesson.title}</h1>
-      <div className="mb-4">{lesson.content}</div>
       {lesson.videoUrl && (
-        <div className="mb-5">
-          <video
-            src={lesson.videoUrl}
-            controls
-            className="w-full rounded"
-            style={{ maxHeight: "400px" }}
-          >
-            متصفحك لا يدعم تشغيل الفيديو.
-          </video>
-        </div>
+        <video
+          src={`http://localhost:5000${lesson.videoUrl}`}
+          controls
+          className="w-full rounded"
+          style={{ maxHeight: "400px" }}
+        >
+          متصفحك لا يدعم تشغيل الفيديو.
+        </video>
       )}
+      <div className="mb-4">{lesson.content}</div>
       {lesson.attachments && lesson.attachments.length > 0 && (
         <div className="mb-5">
           <h3 className="font-bold mb-2">ملفات الدرس:</h3>
