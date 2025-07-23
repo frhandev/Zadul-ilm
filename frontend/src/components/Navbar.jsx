@@ -16,28 +16,31 @@ export default function Navbar() {
     }
   };
   return (
-    <nav className="bg-white shadow flex justify-between items-center px-6 py-4">
+    <nav className="bg-white shadow flex flex-col md:flex-row justify-between items-center md:px-[20%] px-4 py-4 gap-3">
       <Link to="/">
         <div className="flex items-center gap-2">
-          <img src={logo} alt="زاد العلم" className="w-10" />
+          <img src={logo} alt="زاد العلم" className="w-20" />
         </div>
       </Link>
-      <form onSubmit={handleSearch} className="flex items-center gap-2">
+      <form
+        onSubmit={handleSearch}
+        className="flex items-center gap-2 w-full md:w-[50%] h-20"
+      >
         <input
           type="text"
           placeholder="ابحث عن دورة..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border px-3 py-1 rounded"
+          className="border px-3 py-1 rounded w-full md:w-[80%]"
         />
         <button
           type="submit"
-          className="bg-green-600 text-white rounded px-4 py-1"
+          className="bg-primary hover:scale-105 transition-all duration-300 hover:shadow-lg text-white rounded px-4 py-1 w-24 md:w-[20%] cursor-pointer"
         >
           بحث
         </button>
       </form>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-end">
         <Link to="/courses" className="hover:text-green-600">
           الدورات
         </Link>
@@ -51,7 +54,7 @@ export default function Navbar() {
                 localStorage.clear();
                 window.location.href = "/";
               }}
-              className="text-red-600 hover:underline"
+              className="text-red-600 hover:underline cursor-pointer"
             >
               تسجيل خروج
             </button>
