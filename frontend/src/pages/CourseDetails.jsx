@@ -47,14 +47,23 @@ export default function CourseDetails() {
         setLoading(false);
       }
     };
+
     const checkEnrollment = async () => {
       try {
         if (user.role === "student") {
           const res = await axios.get(
-            `http://localhost:5000/api/enrollments/my-courses`,
+            "http://localhost:5000/api/enrollments/my-courses",
             { headers: { Authorization: `Bearer ${token}` } }
           );
-          const enrolled = res.data.some((enr) => enr.course._id === id);
+          // تحقق وطباعة لتشخيص الأخطاء
+          // (قد تحتوي بعض العناصر course = null)
+          // اطبع القيم للتأكد
+          // console.log("enrollments:", res.data, "courseId param:", id);
+
+          const enrolled = res.data.some(
+            (enr) =>
+              enr.course && String(enr.course._id).trim() === String(id).trim()
+          );
           setIsEnrolled(enrolled);
         } else {
           setIsEnrolled(true);
@@ -63,6 +72,7 @@ export default function CourseDetails() {
         setIsEnrolled(false);
       }
     };
+
     fetchCourse();
     checkEnrollment();
   }, [id, token, user.role, navigate]);
@@ -246,7 +256,6 @@ export default function CourseDetails() {
                   }
                 );
                 alert("تم حذف الدورة بنجاح.");
-                // يرجع لصفحة الكورسات (أو الصفحة الرئيسية)
                 navigate("/courses");
               } catch (err) {
                 alert(
@@ -409,7 +418,6 @@ export default function CourseDetails() {
                 </button>
               </form>
             )}
-
           {/* ====== قسم التقييمات والتعليقات ====== */}
           <h2 className="text-xl font-semibold my-8">تقييمات الطلاب</h2>
           {reviewsError && (

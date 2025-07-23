@@ -54,7 +54,6 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <LatestCoursesCarousel />
       <div className="max-w-5xl mx-auto py-10">
         <h2 className="text-xl font-bold mb-6 text-center">التصنيفات</h2>
         <div className="flex flex-wrap gap-3 justify-center">
@@ -62,13 +61,14 @@ export default function Home() {
             <Link
               key={cat}
               to={`/courses?category=${encodeURIComponent(cat)}`}
-              className="px-5 py-2 bg-green-100 rounded-full font-bold text-green-700 hover:bg-green-200 transition"
+              className="px-5 py-2 bg-primary rounded-full font-bold text-white hover:bg-[#94b551] hover:scale-105 transition duration-300"
             >
               {cat}
             </Link>
           ))}
         </div>
       </div>
+      <LatestCoursesCarousel />
     </div>
   );
 }

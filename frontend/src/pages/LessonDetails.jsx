@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import VideoPlayer from "../components/VideoPlayer";
 
 export default function LessonDetails() {
   const { lessonId } = useParams();
@@ -74,14 +75,7 @@ export default function LessonDetails() {
     <div className="max-w-2xl mx-auto py-10">
       <h1 className="text-2xl font-bold mb-4">{lesson.title}</h1>
       {lesson.videoUrl && (
-        <video
-          src={`http://localhost:5000${lesson.videoUrl}`}
-          controls
-          className="w-full rounded"
-          style={{ maxHeight: "400px" }}
-        >
-          متصفحك لا يدعم تشغيل الفيديو.
-        </video>
+        <VideoPlayer src={lesson.videoUrl} poster={lesson.poster} />
       )}
       <div className="mb-4">{lesson.content}</div>
       {lesson.attachments && lesson.attachments.length > 0 && (

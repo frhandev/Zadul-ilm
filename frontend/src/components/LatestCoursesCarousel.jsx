@@ -44,7 +44,7 @@ export default function LatestCoursesCarousel() {
   };
 
   return (
-    <section className="max-w-6xl mx-auto py-12 w-full">
+    <section className="max-w-6xl mx-auto py-12 w-full flex flex-col justify-center items-center">
       <h2 className="text-2xl font-bold mb-6 text-center">أحدث الدورات</h2>
       {loading ? (
         <div className="text-center">جارٍ التحميل...</div>
@@ -53,7 +53,10 @@ export default function LatestCoursesCarousel() {
           لا يوجد دورات مضافة بعد.
         </div>
       ) : (
-        <Slider {...settings} className="w-full flex flex-row h-fit">
+        <Slider
+          {...settings}
+          className="w-full flex flex-row justify-center items-center h-fit"
+        >
           {courses.map((course) => (
             <div key={course._id} className="p-2">
               <CourseCard course={course} />

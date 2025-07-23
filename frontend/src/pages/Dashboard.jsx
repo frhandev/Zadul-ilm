@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import CourseCard from "../components/CourseCard";
 
 export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -90,23 +91,11 @@ export default function Dashboard() {
         <div className="text-center text-gray-500">لا يوجد دورات بعد.</div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
-          {courses.map((course) => (
-            <Link
-              key={course._id}
-              to={`/courses/${course._id}`}
-              className="bg-white rounded shadow p-5 block hover:shadow-lg transition"
-            >
-              <h3 className="font-bold mb-2 text-lg">{course.title}</h3>
-              <div className="mb-1 text-gray-700">{course.category}</div>
-              <div className="mb-1 text-gray-500 line-clamp-2">
-                {course.description}
-              </div>
-              <div className="text-sm text-gray-400">
-                {course.createdAt &&
-                  new Date(course.createdAt).toLocaleDateString()}
-              </div>
-            </Link>
-          ))}
+          {courses
+            .filter((course) => course && course._id) // حماية إضافية من العناصر غير الصحيحة
+            .map((course) => (
+              <CourseCard key={course._id} course={course} />
+            ))}
         </div>
       )}
     </div>

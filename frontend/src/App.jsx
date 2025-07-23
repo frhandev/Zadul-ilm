@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import AddCourse from "./pages/AddCourse";
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-course" element={<AddCourse />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
         <Footer />
       </BrowserRouter>

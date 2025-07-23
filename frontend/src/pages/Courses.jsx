@@ -39,14 +39,20 @@ export default function Courses() {
       : courses.filter((c) => c.category === selectedCat);
 
   return (
-    <div className="max-w-6xl mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6 text-center">الدورات</h1>
-      <div className="flex flex-wrap gap-3 justify-center">
+    <div className="max-w-6xl mx-auto py-10 flex justify-center flex-col items-center">
+      <h1 className="text-4xl font-bold mb-6 text-center">الدورات</h1>
+      <div className="flex flex-wrap gap-3 justify-center my-10">
+        <Link
+          to={`/courses`}
+          className="px-5 py-2 bg-primary rounded-full font-bold text-white hover:bg-[#94b551] hover:scale-105 transition duration-300"
+        >
+          الكل
+        </Link>
         {categories.map((cat) => (
           <Link
             key={cat}
             to={`/courses?category=${encodeURIComponent(cat)}`}
-            className="px-5 py-2 bg-green-100 rounded-full font-bold text-green-700 hover:bg-green-200 transition"
+            className="px-5 py-2 bg-primary rounded-full font-bold text-white hover:bg-[#94b551] hover:scale-105 hover:shadow-lg transition duration-300"
           >
             {cat}
           </Link>
@@ -59,7 +65,7 @@ export default function Courses() {
           لا يوجد دورات بهذا التصنيف.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-[80%]">
           {filteredCourses.map((course) => (
             <CourseCard key={course._id} course={course} />
           ))}

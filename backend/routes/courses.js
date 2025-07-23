@@ -55,10 +55,22 @@ router.post("/", auth, upload.single("image"), async (req, res) => {
   }
 });
 
-// جلب جميع الدورات
 router.get("/", async (req, res) => {
   try {
-    const courses = await Course.find().populate("teacher", "name email");
+    const { search, category } = req.query;
+    let query = {};
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (category && category !== "الكل") {
+      query.category = category;
+    }
+
+    const courses = await Course.find(query).populate("teacher", "name email");
     res.json(courses);
   } catch (error) {
     res.status(500).json({ message: "حدث خطأ أثناء جلب الدورات." });
@@ -107,33 +119,6 @@ router.put("/:id", auth, upload.single("image"), async (req, res) => {
     res.json({ message: "تم تعديل الدورة بنجاح", course });
   } catch (error) {
     res.status(500).json({ message: "حدث خطأ أثناء التعديل" });
-  }
-});
-
-// حذف دورة
-router.delete("/:courseId", auth, async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.courseId);
-    if (!course) return res.status(404).json({ message: "الدورة غير موجودة." });
-
-    // فقط الأدمن أو معلم الدورة له الصلاحية
-    if (
-      req.user.role !== "admin" &&
-      course.teacher.toString() !== req.user.userId
-    ) {
-      return res.status(403).json({ message: "ليس لديك صلاحية الحذف." });
-    }
-
-    // احذف الدروس والتقييمات المرتبطة (اختياري/حسب احتياجك)
-    await Lesson.deleteMany({ course: course._id });
-    await Review.deleteMany({ course: course._id });
-
-    // احذف الدورة نفسها
-    await course.deleteOne();
-    res.json({ message: "تم حذف الدورة بنجاح." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "حدث خطأ أثناء حذف الدورة." });
   }
 });
 
