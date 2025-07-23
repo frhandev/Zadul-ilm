@@ -40,7 +40,7 @@ export default function CourseDetails() {
       try {
         setLoading(true);
         const res = await axios.get(
-          `https://zadul-ilm-1.onrender.com/courses/${id}`
+          `https://zadul-ilm-1.onrender.com/api/courses/${id}`
         );
         setCourse(res.data);
       } catch (err) {
@@ -54,7 +54,7 @@ export default function CourseDetails() {
       try {
         if (user.role === "student") {
           const res = await axios.get(
-            "https://zadul-ilm-1.onrender.com/enrollments/my-courses",
+            "https://zadul-ilm-1.onrender.com/api/enrollments/my-courses",
             { headers: { Authorization: `Bearer ${token}` } }
           );
           // تحقق وطباعة لتشخيص الأخطاء
@@ -85,7 +85,7 @@ export default function CourseDetails() {
       try {
         setLessonsError("");
         const res = await axios.get(
-          `https://zadul-ilm-1.onrender.com/lessons/${id}`,
+          `https://zadul-ilm-1.onrender.com/api/lessons/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -105,7 +105,7 @@ export default function CourseDetails() {
     try {
       setReviewsError("");
       const res = await axios.get(
-        `https://zadul-ilm-1.onrender.com/reviews/course/${id}`,
+        `https://zadul-ilm-1.onrender.com/api/reviews/course/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setReviews(res.data);
@@ -123,7 +123,7 @@ export default function CourseDetails() {
     setError("");
     try {
       await axios.post(
-        `https://zadul-ilm-1.onrender.com/enrollments/${id}`,
+        `https://zadul-ilm-1.onrender.com/api/enrollments/${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -140,7 +140,7 @@ export default function CourseDetails() {
     if (!window.confirm("هل أنت متأكد من حذف الدرس؟")) return;
     try {
       await axios.delete(
-        `https://zadul-ilm-1.onrender.com/lessons/${lessonId}`,
+        `https://zadul-ilm-1.onrender.com/api/lessons/${lessonId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -161,7 +161,7 @@ export default function CourseDetails() {
     if (!window.confirm("هل تريد حذف التعليق؟")) return;
     try {
       await axios.delete(
-        `https://zadul-ilm-1.onrender.com/reviews/${reviewId}`,
+        `https://zadul-ilm-1.onrender.com/api/reviews/${reviewId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -184,7 +184,7 @@ export default function CourseDetails() {
     e.preventDefault();
     try {
       await axios.put(
-        `https://zadul-ilm-1.onrender.com/reviews/${editingReview._id}`,
+        `https://zadul-ilm-1.onrender.com/api/reviews/${editingReview._id}`,
         { comment: editText, rating: editRating },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -214,7 +214,7 @@ export default function CourseDetails() {
       <h1 className="text-2xl font-bold mb-4">{course.title}</h1>
       {course.image && (
         <img
-          src={`http://localhost:5000${course.image}`}
+          src={`https://zadul-ilm-1.onrender.com${course.image}`}
           alt={course.title}
           className="rounded mb-4 h-60 object-cover"
         />
@@ -248,7 +248,7 @@ export default function CourseDetails() {
           onSuccess={() => {
             setEditingCourse(false);
             axios
-              .get(`https://zadul-ilm-1.onrender.com/courses/${id}`)
+              .get(`https://zadul-ilm-1.onrender.com/api/courses/${id}`)
               .then((res) => setCourse(res.data));
           }}
           onCancel={() => setEditingCourse(false)}
@@ -261,7 +261,7 @@ export default function CourseDetails() {
               if (!window.confirm("هل تريد حذف الدورة بشكل نهائي؟")) return;
               try {
                 await axios.delete(
-                  `https://zadul-ilm-1.onrender.com/courses/${course._id}`,
+                  `https://zadul-ilm-1.onrender.com/api/courses/${course._id}`,
                   {
                     headers: { Authorization: `Bearer ${token}` },
                   }

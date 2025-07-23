@@ -46,7 +46,7 @@ export default function LatestCoursesCarousel() {
   };
 
   return (
-    <section className="max-w-6xl mx-auto py-12 w-full flex flex-col justify-center items-center">
+    <section className="max-w-[70%] mx-auto py-12 w-full flex flex-col justify-center items-center">
       <h2 className="text-2xl font-bold mb-6 text-center">أحدث الدورات</h2>
       {loading ? (
         <div className="text-center">جارٍ التحميل...</div>

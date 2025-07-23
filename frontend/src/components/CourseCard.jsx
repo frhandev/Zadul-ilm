@@ -10,7 +10,9 @@ export default function CourseCard({ course }) {
     >
       <img
         src={
-          course.image ? `http://localhost:5000${course.image}` : "/default.png"
+          course.image
+            ? `https://zadul-ilm-1.onrender.com${course.image}`
+            : "/default.png"
         }
         alt={course.title}
         className="h-[50%] object-cover rounded mb-3 mx-auto w-full "
