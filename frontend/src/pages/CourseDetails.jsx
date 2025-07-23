@@ -39,7 +39,9 @@ export default function CourseDetails() {
     const fetchCourse = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:5000/api/courses/${id}`);
+        const res = await axios.get(
+          `https://zadul-ilm-1.onrender.com/courses/${id}`
+        );
         setCourse(res.data);
       } catch (err) {
         setError("تعذر تحميل بيانات الدورة.");
@@ -52,7 +54,7 @@ export default function CourseDetails() {
       try {
         if (user.role === "student") {
           const res = await axios.get(
-            "http://localhost:5000/api/enrollments/my-courses",
+            "https://zadul-ilm-1.onrender.com/enrollments/my-courses",
             { headers: { Authorization: `Bearer ${token}` } }
           );
           // تحقق وطباعة لتشخيص الأخطاء
@@ -82,9 +84,12 @@ export default function CourseDetails() {
     if (isEnrolled) {
       try {
         setLessonsError("");
-        const res = await axios.get(`http://localhost:5000/api/lessons/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `https://zadul-ilm-1.onrender.com/lessons/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setLessons(res.data);
       } catch (err) {
         setLessonsError("تعذر جلب الدروس أو لا تملك صلاحية مشاهدتها.");
@@ -100,7 +105,7 @@ export default function CourseDetails() {
     try {
       setReviewsError("");
       const res = await axios.get(
-        `http://localhost:5000/api/reviews/course/${id}`,
+        `https://zadul-ilm-1.onrender.com/reviews/course/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setReviews(res.data);
@@ -118,7 +123,7 @@ export default function CourseDetails() {
     setError("");
     try {
       await axios.post(
-        `http://localhost:5000/api/enrollments/${id}`,
+        `https://zadul-ilm-1.onrender.com/enrollments/${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -134,9 +139,12 @@ export default function CourseDetails() {
   const handleDeleteLesson = async (lessonId) => {
     if (!window.confirm("هل أنت متأكد من حذف الدرس؟")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://zadul-ilm-1.onrender.com/lessons/${lessonId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchLessons();
     } catch (err) {
       alert(err.response?.data?.message || "تعذر حذف الدرس!");
@@ -152,9 +160,12 @@ export default function CourseDetails() {
   const handleDeleteReview = async (reviewId) => {
     if (!window.confirm("هل تريد حذف التعليق؟")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/reviews/${reviewId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://zadul-ilm-1.onrender.com/reviews/${reviewId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchReviews();
     } catch (err) {
       alert(err.response?.data?.message || "خطأ أثناء حذف التعليق!");
@@ -173,7 +184,7 @@ export default function CourseDetails() {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/api/reviews/${editingReview._id}`,
+        `https://zadul-ilm-1.onrender.com/reviews/${editingReview._id}`,
         { comment: editText, rating: editRating },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -237,7 +248,7 @@ export default function CourseDetails() {
           onSuccess={() => {
             setEditingCourse(false);
             axios
-              .get(`http://localhost:5000/api/courses/${id}`)
+              .get(`https://zadul-ilm-1.onrender.com/courses/${id}`)
               .then((res) => setCourse(res.data));
           }}
           onCancel={() => setEditingCourse(false)}
@@ -250,7 +261,7 @@ export default function CourseDetails() {
               if (!window.confirm("هل تريد حذف الدورة بشكل نهائي؟")) return;
               try {
                 await axios.delete(
-                  `http://localhost:5000/api/courses/${course._id}`,
+                  `https://zadul-ilm-1.onrender.com/courses/${course._id}`,
                   {
                     headers: { Authorization: `Bearer ${token}` },
                   }
@@ -373,7 +384,7 @@ export default function CourseDetails() {
                   e.preventDefault();
                   try {
                     await axios.post(
-                      `http://localhost:5000/api/reviews/course/${course._id}`,
+                      `https://zadul-ilm-1.onrender.com/api/reviews/course/${course._id}`,
                       { comment: editText, rating: editRating },
                       { headers: { Authorization: `Bearer ${token}` } }
                     );

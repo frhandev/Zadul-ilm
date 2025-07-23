@@ -19,7 +19,7 @@ export default function SearchPage() {
     setLoading(true);
     axios
       .get(
-        `http://localhost:5000/api/courses?search=${encodeURIComponent(
+        `https://zadul-ilm-1.onrender.com/api/courses?search=${encodeURIComponent(
           searchTerm
         )}`
       )

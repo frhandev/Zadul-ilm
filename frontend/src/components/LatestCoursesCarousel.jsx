@@ -12,7 +12,9 @@ export default function LatestCoursesCarousel() {
   useEffect(() => {
     // جلب أحدث 10 دورات من السيرفر
     axios
-      .get("http://localhost:5000/api/courses?limit=10&sort=createdAt-desc")
+      .get(
+        "https://zadul-ilm-1.onrender.com/api/courses?limit=10&sort=createdAt-desc"
+      )
       .then((res) => {
         setCourses(res.data);
         setLoading(false);

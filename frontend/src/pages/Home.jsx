@@ -7,7 +7,7 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/courses") // استبدل بالرابط الصحيح في مشروعك
+    fetch("https://zadul-ilm-1.onrender.com/api/courses") // استبدل بالرابط الصحيح في مشروعك
       .then((res) => res.json())
       .then((data) => {
         const cats = [...new Set(data.map((c) => c.category).filter(Boolean))];

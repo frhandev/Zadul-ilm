@@ -47,12 +47,16 @@ export default function AddCourse() {
     if (imageFile) formData.append("image", imageFile);
 
     try {
-      await axios.post("http://localhost:5000/api/courses", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://zadul-ilm-1.onrender.com/api/courses",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setSuccess("تمت إضافة الدورة بنجاح!");
       setTimeout(() => {
         navigate("/dashboard");

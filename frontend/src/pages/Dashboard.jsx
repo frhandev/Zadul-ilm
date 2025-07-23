@@ -24,7 +24,7 @@ export default function Dashboard() {
       try {
         if (user.role === "student") {
           const res = await axios.get(
-            "http://localhost:5000/api/enrollments/my-courses",
+            "https://zadul-ilm-1.onrender.com/api/enrollments/my-courses",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -32,7 +32,7 @@ export default function Dashboard() {
           setCourses(res.data.map((enr) => enr.course));
         } else if (user.role === "teacher") {
           const res = await axios.get(
-            "http://localhost:5000/api/courses?mycourses=1",
+            "https://zadul-ilm-1.onrender.com/api/courses?mycourses=1",
             {
               headers: { Authorization: `Bearer ${token}` },
             }

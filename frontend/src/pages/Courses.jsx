@@ -10,7 +10,7 @@ export default function Courses() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/courses") // استبدل بالرابط الصحيح في مشروعك
+    fetch("https://zadul-ilm-1.onrender.com/courses") // استبدل بالرابط الصحيح في مشروعك
       .then((res) => res.json())
       .then((data) => {
         const cats = [...new Set(data.map((c) => c.category).filter(Boolean))];
@@ -24,7 +24,7 @@ export default function Courses() {
   const selectedCat = params.get("category") || "all";
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/courses")
+    fetch("https://zadul-ilm-1.onrender.com/api/courses")
       .then((res) => res.json())
       .then((data) => {
         setCourses(data);

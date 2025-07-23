@@ -17,7 +17,7 @@ export default function LessonDetails() {
   useEffect(() => {
     const fetchComments = async () => {
       const res = await axios.get(
-        `http://localhost:5000/api/comments/${lessonId}`
+        `https://zadul-ilm-1.onrender.com/api/comments/${lessonId}`
       );
       setComments(res.data);
     };
@@ -29,14 +29,14 @@ export default function LessonDetails() {
     e.preventDefault();
     if (!newComment.trim()) return;
     await axios.post(
-      `http://localhost:5000/api/comments/${lessonId}`,
+      `https://zadul-ilm-1.onrender.com/api/comments/${lessonId}`,
       { text: newComment },
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setNewComment("");
     // جلب التعليقات مجددًا بعد الإضافة
     const res = await axios.get(
-      `http://localhost:5000/api/comments/${lessonId}`
+      `https://zadul-ilm-1.onrender.com/api/comments/${lessonId}`
     );
     setComments(res.data);
   };
@@ -50,7 +50,7 @@ export default function LessonDetails() {
       try {
         setLoading(true);
         const res = await axios.get(
-          `http://localhost:5000/api/lessons/view/${lessonId}`,
+          `https://zadul-ilm-1.onrender.com/api/lessons/view/${lessonId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setLesson(res.data);

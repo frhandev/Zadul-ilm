@@ -24,7 +24,7 @@ export default function AddLessonForm({ courseId, onSuccess, onCancel }) {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/lessons/${courseId}`,
+        `https://zadul-ilm-1.onrender.com/api/${courseId}`,
         {
           title,
           content,

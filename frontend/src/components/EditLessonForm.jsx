@@ -17,7 +17,7 @@ export default function EditLessonForm({ lesson, onSuccess, onCancel }) {
     setError("");
     try {
       await axios.put(
-        `http://localhost:5000/api/lessons/${lesson._id}`,
+        `https://zadul-ilm-1.onrender.com/api/lessons/${lesson._id}`,
         { title, content, order, videoUrl },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -35,7 +35,7 @@ export default function EditCourseForm({ course, onSuccess, onCancel }) {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/courses/${course._id}`,
+        `https://zadul-ilm-1.onrender.com/courses/${course._id}`,
         formData,
         {
           headers: {
@@ -94,7 +94,7 @@ export default function EditCourseForm({ course, onSuccess, onCancel }) {
       />
       {course.image && (
         <img
-          src={`http://localhost:5000${course.image}`}
+          src={`https://zadul-ilm-1.onrender.com/api${course.image}`}
           alt="صورة الدورة الحالية"
           className="h-32 mb-2 rounded"
         />
