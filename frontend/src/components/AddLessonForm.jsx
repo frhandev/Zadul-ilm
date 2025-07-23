@@ -5,104 +5,95 @@ export default function AddLessonForm({ courseId, onSuccess, onCancel }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [order, setOrder] = useState("");
-  const [error, setError] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [videoFile, setVideoFile] = useState(null);
+  const [error, setError] = useState("");
 
   const token = localStorage.getItem("token");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
+    setError("");
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    formData.append("order", order);
-    if (videoFile) formData.append("video", videoFile);
+    if (!title || !content || !videoUrl) {
+      setError("يرجى تعبئة جميع الحقول المطلوبة");
+      setLoading(false);
+      return;
+    }
 
     try {
       await axios.post(
         `http://localhost:5000/api/lessons/${courseId}`,
-        formData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+          title,
+          content,
+          order,
+          videoUrl,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setTitle("");
       setContent("");
       setOrder("");
-      setVideoFile(null);
-      setLoading(false);
+      setVideoUrl("");
       if (onSuccess) onSuccess();
     } catch (err) {
+      setError(err.response?.data?.message || "حدث خطأ أثناء إضافة الدرس.");
+    } finally {
       setLoading(false);
-      setError(
-        err.response?.data?.message ||
-          "حدث خطأ أثناء إضافة الدرس. تأكد من البيانات أو الصلاحية."
-      );
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-gray-50 p-4 rounded shadow space-y-3 mb-6"
-    >
-      <h3 className="font-bold mb-2">إضافة درس جديد</h3>
+    <form onSubmit={handleSubmit} className="p-4 bg-gray-50 rounded mb-5">
+      <h2 className="font-bold mb-2">إضافة درس جديد</h2>
+      {error && <div className="text-red-500 mb-2">{error}</div>}
       <input
-        className="w-full border rounded p-2"
+        className="w-full mb-2 border rounded p-2"
         placeholder="عنوان الدرس"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
-      <input
-        type="file"
-        accept="video/*"
-        className="w-full border rounded p-2"
-        onChange={(e) => setVideoFile(e.target.files[0])}
-      />
-
       <textarea
-        className="w-full border rounded p-2"
+        className="w-full mb-2 border rounded p-2"
         placeholder="محتوى الدرس"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        rows={4}
         required
       />
       <input
-        className="w-full border rounded p-2"
-        placeholder="ترتيب الدرس (اختياري، مثال: 1)"
+        className="w-full mb-2 border rounded p-2"
+        placeholder="ترتيب الدرس (اختياري)"
+        type="number"
         value={order}
         onChange={(e) => setOrder(e.target.value)}
-        type="number"
-        min={1}
       />
-      {error && <div className="text-red-500">{error}</div>}
-      <div className="flex gap-3">
+      <input
+        className="w-full mb-2 border rounded p-2"
+        placeholder="رابط فيديو يوتيوب (مثال: https://www.youtube.com/watch?v=...)"
+        value={videoUrl}
+        onChange={(e) => setVideoUrl(e.target.value)}
+        required
+      />
+      <div className="flex gap-2">
         <button
           type="submit"
-          className="bg-green-600 text-white px-4 py-1 rounded"
           disabled={loading}
+          className="bg-green-700 text-white px-4 py-2 rounded"
         >
-          {loading ? "جارٍ الإضافة..." : "إضافة الدرس"}
+          {loading ? "جاري الإضافة..." : "إضافة الدرس"}
         </button>
-        {onCancel && (
-          <button
-            type="button"
-            className="bg-gray-400 text-white px-4 py-1 rounded"
-            onClick={onCancel}
-            disabled={loading}
-          >
-            إلغاء
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={onCancel}
+          className="bg-gray-400 text-white px-4 py-2 rounded"
+        >
+          إلغاء
+        </button>
       </div>
     </form>
   );

@@ -2,13 +2,27 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 
 // إعداد dotenv لقراءة متغيرات البيئة من ملف .env
 dotenv.config();
 
 const app = express();
 
-app.use("/uploads", express.static("uploads"));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    setHeaders: function (res, filePath) {
+      // لو صورة jpg/png
+      if (filePath.endsWith(".jpg")) res.set("Content-Type", "image/jpeg");
+      if (filePath.endsWith(".jpeg")) res.set("Content-Type", "image/jpeg");
+      if (filePath.endsWith(".png")) res.set("Content-Type", "image/png");
+      if (filePath.endsWith(".gif")) res.set("Content-Type", "image/gif");
+      // لو فيديو mp4
+      if (filePath.endsWith(".mp4")) res.set("Content-Type", "video/mp4");
+    },
+  })
+);
 
 // Middlewares
 app.use(cors());

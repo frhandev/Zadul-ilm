@@ -19,23 +19,17 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// إضافة درس جديد (معلم فقط)
-router.post("/:courseId", auth, upload.single("video"), async (req, res) => {
+// إضافة درس جديد (يدعم رابط يوتيوب فقط)
+router.post("/:courseId", auth, async (req, res) => {
   try {
-    // التحقق من الصلاحية
     if (req.user.role !== "teacher" && req.user.role !== "admin") {
       return res
         .status(403)
         .json({ message: "الصلاحية فقط للمعلمين أو الإدارة." });
     }
 
-    const { title, content, order } = req.body;
+    const { title, content, order, videoUrl } = req.body;
     const courseId = req.params.courseId;
-
-    let videoUrl = "";
-    if (req.file) {
-      videoUrl = `/uploads/videos/${req.file.filename}`;
-    }
 
     // تحقق أن الدورة موجودة
     const course = await Course.findById(courseId);
@@ -53,13 +47,13 @@ router.post("/:courseId", auth, upload.single("video"), async (req, res) => {
         .json({ message: "ليس لديك صلاحية لإضافة درس في هذه الدورة." });
     }
 
-    // إنشاء الدرس
+    // إنشاء الدرس مع رابط يوتيوب
     const lesson = new Lesson({
       title,
       content,
       order,
       course: req.params.courseId,
-      videoUrl,
+      videoUrl, // مباشرة من الـ body
     });
     await lesson.save();
 

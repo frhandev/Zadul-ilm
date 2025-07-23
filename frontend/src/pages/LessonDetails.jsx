@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import VideoPlayer from "../components/VideoPlayer";
+import ReactPlayer from "react-player";
 
 export default function LessonDetails() {
   const { lessonId } = useParams();
@@ -46,7 +46,6 @@ export default function LessonDetails() {
       navigate("/login");
       return;
     }
-
     const fetchLesson = async () => {
       try {
         setLoading(true);
@@ -67,16 +66,43 @@ export default function LessonDetails() {
     fetchLesson();
   }, [lessonId, token, navigate]);
 
+  function youtubeUrlToEmbed(url) {
+    const regex =
+      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/;
+    const match = url.match(regex);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    // رابط مختصر
+    const short = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    if (short && short[1]) {
+      return `https://www.youtube.com/embed/${short[1]}`;
+    }
+    return url; // إذا كان أصلًا embed
+  }
+
   if (loading) return <div className="text-center py-8">جاري التحميل...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
   if (!lesson) return null;
 
   return (
-    <div className="max-w-2xl mx-auto py-10">
+    <div className="flex flex-col justify-center items-center sm:w-[50%] w-[90%] mx-[5%] sm:mx-[25%] min-h-[80vh]">
       <h1 className="text-2xl font-bold mb-4">{lesson.title}</h1>
+      {/* عرض فيديو يوتيوب فقط */}
+
       {lesson.videoUrl && (
-        <VideoPlayer src={lesson.videoUrl} poster={lesson.poster} />
+        <iframe
+          width="100%"
+          height="420"
+          src={youtubeUrlToEmbed(lesson.videoUrl)}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          style={{ borderRadius: "12px", marginBottom: 20 }}
+        />
       )}
+
       <div className="mb-4">{lesson.content}</div>
       {lesson.attachments && lesson.attachments.length > 0 && (
         <div className="mb-5">
@@ -97,7 +123,7 @@ export default function LessonDetails() {
           </ul>
         </div>
       )}
-      <div className="mt-8">
+      <div className="mt-8 w-[100%]">
         <h3 className="font-bold mb-3">التعليقات:</h3>
         <form onSubmit={handleAddComment} className="flex mb-3 gap-2">
           <input
@@ -110,7 +136,7 @@ export default function LessonDetails() {
             إرسال
           </button>
         </form>
-        <ul>
+        <ul className=" w-[100%]">
           {comments.map((c) => (
             <li key={c._id} className="mb-2">
               <span className="font-bold text-gray-700">{c.user?.name}: </span>
